@@ -6,4 +6,5 @@
 - Initially will move slowly but gradually progress fast as user become proficient.
 
 Current phase: App specification
+
 Main specification file: SuperTyperTrainer Specification.docx
