@@ -125,6 +125,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
+    case WM_CREATE:
+        {
+            MainGraph.GraphicObject.CreateG_Resources(hWnd);
+
+            LocTest_.left = 500;
+            LocTest_.right = LocTest_.left + 50;
+            LocTest_.top = 500;
+            LocTest_.bottom = LocTest_.top + 50;
+        }
+        break;
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
@@ -153,14 +163,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     case WM_PAINT:
         {
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: Add any drawing code that uses hdc here...
-            EndPaint(hWnd, &ps);
+            MainGraph.BeginDraw();
+
+            MainGraph.DrawBKey(LocTest_, &letterTest);
+            
+            MainGraph.EndDraw();
+        }
+        break;
+    case WM_SIZE:
+        {
+            MainGraph.Resize();
         }
         break;
     case WM_DESTROY:
-        PostQuitMessage(0);
+        {
+            MainGraph.GraphicObject.DestroyG_Resources();
+            PostQuitMessage(0);
+        }
         break;
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);

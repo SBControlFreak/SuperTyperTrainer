@@ -13,3 +13,23 @@
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
+
+#include <string>
+#include <vector>
+
+//Direct2D and DirectWrite Libraries
+#include <d2d1.h>
+#include <dwrite.h>
+#pragma comment(lib, "d2d1")	//Needed to tell linker to link the library
+#pragma comment(lib, "Dwrite")	//Needed to tell linker to link the library
+
+using namespace std;
+
+template <class T> void SafeRelease(T** ppT)
+{
+	if (*ppT)
+	{
+		(*ppT)->Release();
+		*ppT = NULL;
+	}
+}
