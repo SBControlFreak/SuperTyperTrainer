@@ -23,6 +23,9 @@
 #pragma comment(lib, "d2d1")	//Needed to tell linker to link the library
 #pragma comment(lib, "Dwrite")	//Needed to tell linker to link the library
 
+//Other needed Libraries
+#include <vector>
+
 using namespace std;
 
 template <class T> void SafeRelease(T** ppT)

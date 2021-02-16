@@ -129,10 +129,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             MainGraph.GraphicObject.CreateG_Resources(hWnd);
 
-            LocTest_.left = 500;
-            LocTest_.right = LocTest_.left + 50;
-            LocTest_.top = 500;
-            LocTest_.bottom = LocTest_.top + 50;
+            LocTest_.left = 50;
+            LocTest_.right = 100;
+            LocTest_.top = 100;
+            LocTest_.bottom = 150;
         }
         break;
     case WM_COMMAND:
@@ -165,7 +165,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             MainGraph.BeginDraw();
 
-            MainGraph.DrawBKey(LocTest_, &letterTest);
+            KeyBoardCon.DrawUpdate(5.76);
             
             MainGraph.EndDraw();
         }
@@ -173,7 +173,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_SIZE:
         {
             MainGraph.Resize();
+            KeyBoardCon.Resize();
         }
+        break;
+    case WM_CHAR:
+        break;
+    case WM_KEYDOWN:
         break;
     case WM_DESTROY:
         {

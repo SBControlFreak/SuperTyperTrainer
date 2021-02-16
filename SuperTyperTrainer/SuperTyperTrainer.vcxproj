@@ -142,6 +142,7 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="GraphCom.h" />
     <ClInclude Include="Graphics.h" />
+    <ClInclude Include="KeyBoard.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SuperTyperTrainer.h" />
     <ClInclude Include="targetver.h" />
@@ -149,6 +150,7 @@
   <ItemGroup>
     <ClCompile Include="GraphCom.cpp" />
     <ClCompile Include="Graphics.cpp" />
+    <ClCompile Include="KeyBoard.cpp" />
     <ClCompile Include="SuperTyperTrainer.cpp" />
   </ItemGroup>
   <ItemGroup>
