@@ -21,7 +21,7 @@ public:
 	bool						BeginDraw();
 	void						EndDraw();
 	void						DrawScrollBar();
-	void						DrawBlockOutline();
+	void						DrawKBBackground(const D2D1_RECT_F* Location);
 	void						DrawBKey(D2D1_RECT_F& Location, const WCHAR *letter);
 	/******************************Utility Functions******************************/
 	void						WinMessageBox(LPCWSTR Title, LPCWSTR Subject, int Type);

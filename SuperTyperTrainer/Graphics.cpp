@@ -69,6 +69,7 @@ HRESULT Graphics::CreateG_Resources(HWND& hWnd_)
 				G_R.B_KeyBG_Normal.C = D2D1::ColorF(D2D1::ColorF::AntiqueWhite);
 				G_R.B_KeyBG_Next.C = D2D1::ColorF(D2D1::ColorF::LightGreen);
 				G_R.B_KeyBG_Wrong.C = D2D1::ColorF(D2D1::ColorF::Red);
+				G_R.B_KeyBoardFrame.C = D2D1::ColorF(D2D1::ColorF::LightGray);
 				G_R.B_Outline.C = D2D1::ColorF(D2D1::ColorF::Black);
 				G_R.B_Font.C = D2D1::ColorF(D2D1::ColorF::Black);
 				G_R.B_Scroll_B.C = D2D1::ColorF(D2D1::ColorF::LightGray);
@@ -79,6 +80,7 @@ HRESULT Graphics::CreateG_Resources(HWND& hWnd_)
 			hr = G_R.B_KeyBG_Normal.CreateBrush(G_R.pRenderTarget);
 			hr = G_R.B_KeyBG_Next.CreateBrush(G_R.pRenderTarget);
 			hr = G_R.B_KeyBG_Wrong.CreateBrush(G_R.pRenderTarget);
+			hr = G_R.B_KeyBoardFrame.CreateBrush(G_R.pRenderTarget);
 			hr = G_R.B_Outline.CreateBrush(G_R.pRenderTarget);
 			hr = G_R.B_Font.CreateBrush(G_R.pRenderTarget);
 			hr = G_R.B_Scroll_B.CreateBrush(G_R.pRenderTarget);

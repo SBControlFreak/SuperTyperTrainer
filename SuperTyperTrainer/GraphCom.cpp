@@ -93,21 +93,10 @@ void GraphComs::DrawScrollBar()
 	//	GraphicObject.G_R.pRenderTarget->FillRectangle(SBVars_.Location_Bar, GraphicObject.G_R.B_Scroll_F.pB);
 	//}
 }
-void GraphComs::DrawBlockOutline()
+void GraphComs::DrawKBBackground(const D2D1_RECT_F* Location)
 {
-	//Draw Outline
-	/*switch (ColorScheme_)
-	{
-	case Standard:
-		GraphicObject.G_R.pRenderTarget->DrawRectangle(BBVars.Location, GraphicObject.G_R.B_Outline.pB, 1.0f);
-		break;
-	case Selected:
-		GraphicObject.G_R.pRenderTarget->DrawRectangle(BBVars.Location, GraphicObject.G_R.B_Selected.pB, 3.0f);
-		break;
-	case Paste:
-		GraphicObject.G_R.pRenderTarget->DrawRectangle(BBVars.Location, GraphicObject.G_R.B_Paste.pB, 3.0f);
-		break;
-	}*/
+	//Draw Keyboard background
+	GraphicObject.G_R.pRenderTarget->FillRectangle(Location, GraphicObject.G_R.B_KeyBoardFrame.pB);
 }
 void GraphComs::DrawBKey(D2D1_RECT_F& Location, const WCHAR *letter)
 {
