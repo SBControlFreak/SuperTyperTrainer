@@ -22,7 +22,7 @@ public:
 	void						EndDraw();
 	void						DrawScrollBar();
 	void						DrawKBBackground(const D2D1_RECT_F* Location);
-	void						DrawBKey(D2D1_RECT_F& Location, const WCHAR *letter);
+	void						DrawBKey(D2D1_RECT_F& Location, WPARAM letter, bool Displayable, KBKColor Color);
 	/******************************Utility Functions******************************/
 	void						WinMessageBox(LPCWSTR Title, LPCWSTR Subject, int Type);
 };
