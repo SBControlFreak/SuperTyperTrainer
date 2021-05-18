@@ -2,13 +2,16 @@
 KeyObject::KeyObject()
 {
 }
-KeyObject::KeyObject(const D2D1_RECT_F &Location_, char Meaning_[2], GraphComs* GC_)
+KeyObject::KeyObject(const D2D1_RECT_F &Location_, WPARAM Displayable_[2], GraphComs* GC_)
 	: Location (Location_), GC (GC_)
 {
-	Meaning[0] = Meaning_[0];
-	Meaning[1] = Meaning_[1];
+	Displayable[0] = Displayable_[0];
+	Displayable[1] = Displayable_[1];
+
+	/*NonDisplayed = NULL;*/
 
 	Color = KBKColor::Normal;
+	SecondaryKey = true;
 }
 KeyObject::~KeyObject()
 {
@@ -17,9 +20,76 @@ void KeyObject::DrawKeyBox(const float& timestamp)
 {
 	/*
 	Function: Draws Key. Uses timestamp to access how long to keep color
+	For non-Displayable keys, position 0 is NULL. 
 	*/
-	//const WCHAR letterTest = 'K';
-	GC->DrawBKey(Location, &Meaning[0]);
+	GC->DrawBKey(Location, Displayable[SecondaryKey], Displayable[0], Color);
+}
+bool KeyObject::CheckChar(WPARAM LetterHit, bool CorrectHit, bool Displayable_, bool& VirtualKey)
+{
+	/*
+	Function: Checks LetterHit
+	*/
+
+	int VK_Status = 0;
+
+	if (Displayable_)
+	{
+		if (Displayable[0] != NULL)
+		{
+			if (LetterHit == Displayable[0])
+			{
+				SecondaryKey = false;
+				Color = (CorrectHit) ? KBKColor::Right : KBKColor::Wrong;
+				VirtualKey = false;
+				return true;
+			}
+			else if (LetterHit == Displayable[1])
+			{
+				SecondaryKey = true;
+				Color = (CorrectHit) ? KBKColor::Right : KBKColor::Wrong;
+				VirtualKey = false;
+				return true;
+			}
+			else
+			{
+				SecondaryKey = false;
+				Color = KBKColor::Normal;
+				return false;
+			}
+		}
+		else
+		{
+			SecondaryKey = true;
+			Color = KBKColor::Normal;
+			return false;
+		}
+	}
+	else
+	{
+		if (Displayable[0] == NULL)
+		{
+			VK_Status = GetKeyState(Displayable[1]);
+
+			if (VK_Status & 0x8000)
+			{
+				//SecondaryKey = true;
+				Color = (CorrectHit) ? KBKColor::Right : KBKColor::Wrong;
+				VirtualKey = true;
+				return true;
+			}
+			else
+			{
+				Color = KBKColor::Normal;
+				return false;
+			}
+		}
+		else
+		{
+			SecondaryKey = false;
+			Color = KBKColor::Normal;
+			return false;
+		}
+	}
 }
 void KeyObject::UpdateLocation(const D2D1_RECT_F& Location_)
 {
@@ -41,7 +111,7 @@ KeyBoardController::KeyBoardController(GraphComs* GC_)
 	*/
 
 	float			WWidth, WHeight, KeyHeight, KeyWidth;
-	char			MeaningTemp[2];
+	WPARAM			MeaningTemp[2];
 	D2D1_RECT_F		LocationTemp;
 
 	//1. Determine left, right, top, and bottom coordinates of the window for sizing and position of the keyboard.
@@ -60,73 +130,73 @@ KeyBoardController::KeyBoardController(GraphComs* GC_)
 
 	//3. Create, load, and position KeyObjects of the keyboard.
 	//Escape Key
-	MeaningTemp[0] = 'z';
-	MeaningTemp[1] = NULL;
+	MeaningTemp[0] = NULL;
+	MeaningTemp[1] = 0x1B;
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//F1 Key
-	MeaningTemp[0] = 'z';
-	MeaningTemp[1] = NULL;
+	MeaningTemp[0] = NULL;
+	MeaningTemp[1] = 0x70;
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//F2 Key
-	MeaningTemp[0] = 'z';
-	MeaningTemp[1] = NULL;
+	MeaningTemp[0] = NULL;
+	MeaningTemp[1] = 0x71;
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//F3 Key
-	MeaningTemp[0] = 'z';
-	MeaningTemp[1] = NULL;
+	MeaningTemp[0] = NULL;
+	MeaningTemp[1] = 0x72;
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//F4 Key
-	MeaningTemp[0] = 'z';
-	MeaningTemp[1] = NULL;
+	MeaningTemp[0] = NULL;
+	MeaningTemp[1] = 0x73;
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//F5 Key
-	MeaningTemp[0] = 'z';
-	MeaningTemp[1] = NULL;
+	MeaningTemp[0] = NULL;
+	MeaningTemp[1] = 0x74;
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//F6 Key
-	MeaningTemp[0] = 'z';
-	MeaningTemp[1] = NULL;
+	MeaningTemp[0] = NULL;
+	MeaningTemp[1] = 0x75;
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//F7 Key
-	MeaningTemp[0] = 'z';
-	MeaningTemp[1] = NULL;
+	MeaningTemp[0] = NULL;
+	MeaningTemp[1] = 0x76;
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//F8 Key
-	MeaningTemp[0] = 'z';
-	MeaningTemp[1] = NULL;
+	MeaningTemp[0] = NULL;
+	MeaningTemp[1] = 0x77;
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//F9 Key
-	MeaningTemp[0] = 'z';
-	MeaningTemp[1] = NULL;
+	MeaningTemp[0] = NULL;
+	MeaningTemp[1] = 0x78;
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//F10 Key
-	MeaningTemp[0] = 'z';
-	MeaningTemp[1] = NULL;
+	MeaningTemp[0] = NULL;
+	MeaningTemp[1] = 0x79;
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//F11 Key
-	MeaningTemp[0] = 'z';
-	MeaningTemp[1] = NULL;
+	MeaningTemp[0] = NULL;
+	MeaningTemp[1] = 0x7A;
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//F12 Key
-	MeaningTemp[0] = 'z';
-	MeaningTemp[1] = NULL;
+	MeaningTemp[0] = NULL;
+	MeaningTemp[1] = 0x7B;
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//Eject Key
-	MeaningTemp[0] = 'z';
-	MeaningTemp[1] = NULL;
+	MeaningTemp[0] = NULL;
+	MeaningTemp[1] = 0xFF;
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//Tilde Key
@@ -194,14 +264,14 @@ KeyBoardController::KeyBoardController(GraphComs* GC_)
 	MeaningTemp[1] = '+';
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
-	//Delete Key
-	MeaningTemp[0] = 'z';
-	MeaningTemp[1] = NULL;
+	//Delete Key (Back on MAC)
+	MeaningTemp[0] = NULL;
+	MeaningTemp[1] = 0x08;
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//Tab Key
-	MeaningTemp[0] = 'Z';
-	MeaningTemp[1] = NULL;
+	MeaningTemp[0] = NULL;
+	MeaningTemp[1] = 0x09;
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//Q Key
@@ -270,8 +340,8 @@ KeyBoardController::KeyBoardController(GraphComs* GC_)
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//Caps Key
-	MeaningTemp[0] = 'z';
-	MeaningTemp[1] = NULL;
+	MeaningTemp[0] = NULL;
+	MeaningTemp[1] = 0x14;
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//A Key
@@ -280,7 +350,7 @@ KeyBoardController::KeyBoardController(GraphComs* GC_)
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//S Key
-	MeaningTemp[0] = 'a';
+	MeaningTemp[0] = 's';
 	MeaningTemp[1] = 'S';
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
@@ -330,13 +400,13 @@ KeyBoardController::KeyBoardController(GraphComs* GC_)
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//Return Key
-	MeaningTemp[0] = 'z';
-	MeaningTemp[1] = NULL;
+	MeaningTemp[0] = NULL;
+	MeaningTemp[1] = 0x0D;
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//LShift Key
-	MeaningTemp[0] = 'z';
-	MeaningTemp[1] = NULL;
+	MeaningTemp[0] = NULL;
+	MeaningTemp[1] = 0xA0;
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//Z Key
@@ -390,63 +460,63 @@ KeyBoardController::KeyBoardController(GraphComs* GC_)
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//RShift Key
-	MeaningTemp[0] = 'z';
-	MeaningTemp[1] = NULL;
+	MeaningTemp[0] = NULL;
+	MeaningTemp[1] = 0xA1;
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//Function Key
-	MeaningTemp[0] = 'z';
+	MeaningTemp[0] = NULL;
 	MeaningTemp[1] = NULL;
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//CTRL Key
-	MeaningTemp[0] = 'z';
-	MeaningTemp[1] = NULL;
+	MeaningTemp[0] = NULL;
+	MeaningTemp[1] = 0xA2;
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//LOption Key
-	MeaningTemp[0] = 'z';
-	MeaningTemp[1] = NULL;
+	MeaningTemp[0] = NULL;
+	MeaningTemp[1] = 0xA4;
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//LCommand Key
-	MeaningTemp[0] = 'z';
-	MeaningTemp[1] = NULL;
+	MeaningTemp[0] = NULL;
+	MeaningTemp[1] = 0x5B;
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//Space bar Key
-	MeaningTemp[0] = 'z';
+	MeaningTemp[0] = ' ';
 	MeaningTemp[1] = NULL;
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//RCommand Key
-	MeaningTemp[0] = 'z';
-	MeaningTemp[1] = NULL;
+	MeaningTemp[0] = NULL;
+	MeaningTemp[1] = 0x5C;
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//ROption Key
-	MeaningTemp[0] = 'z';
-	MeaningTemp[1] = NULL;
+	MeaningTemp[0] = NULL;
+	MeaningTemp[1] = 0xA5;
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//LArrow Key
-	MeaningTemp[0] = 'z';
-	MeaningTemp[1] = NULL;
+	MeaningTemp[0] = NULL;
+	MeaningTemp[1] = 0x25;
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//UArrow Key
-	MeaningTemp[0] = 'z';
-	MeaningTemp[1] = NULL;
+	MeaningTemp[0] = NULL;
+	MeaningTemp[1] = 0x26;
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//DArrow Key
-	MeaningTemp[0] = 'z';
-	MeaningTemp[1] = NULL;
+	MeaningTemp[0] = NULL;
+	MeaningTemp[1] = 0x28;
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 
 	//RArrow Key
-	MeaningTemp[0] = 'z';
-	MeaningTemp[1] = NULL;
+	MeaningTemp[0] = NULL;
+	MeaningTemp[1] = 0x27;
 	KeyObjects.push_back(KeyObject(Location, MeaningTemp, GC));
 }
 KeyBoardController::~KeyBoardController()
@@ -668,12 +738,53 @@ void KeyBoardController::Resize()
 	LocationTemp.bottom = KeyObjects[74].Location.bottom;
 	KeyObjects[77].UpdateLocation(LocationTemp);
 }
-void KeyBoardController::DrawUpdate(const float& timestamp)
+void KeyBoardController::DrawUpdate(const float& timestamp, bool wm_char)
 {
 	GC->DrawKBBackground(&Location);
-
+	if (wm_char || VirtualKey)
+	{
+		HitTest = false;	//Reset HitTest
+	}
 	for (size_t i = 0; i < KeyObjects.size(); i++)
 	{
 		KeyObjects[i].DrawKeyBox(timestamp);
 	}
+}
+bool KeyBoardController::WM_char(WPARAM LetterHit, WPARAM LetterCorrect)
+{
+	/*
+	Function: Reads user input for chars
+	*/
+
+	bool CorrectHit = (LetterHit == LetterCorrect) ? true : false;
+
+	if (!HitTest)
+	{
+		for (size_t i = 0; i < KeyObjects.size(); i++)
+		{
+			if (KeyObjects[(int)i].CheckChar(LetterHit, CorrectHit, true, VirtualKey))
+			{
+				HitTest = true;
+			}
+		}
+	}
+	return HitTest;
+}
+bool KeyBoardController::WM_keydown(WPARAM LetterHit, WPARAM LetterCorrect)
+{
+	/*
+	Function: Reads user input for non-displayable characters
+	*/
+
+	bool CorrectHit = (LetterHit == LetterCorrect) ? true : false;
+	HitTest = false;
+
+	for (size_t i = 0; i < KeyObjects.size(); i++)
+	{
+		if (KeyObjects[(int)i].CheckChar(LetterHit, CorrectHit, false, VirtualKey))
+		{
+			HitTest = true;
+		}
+	}
+	return HitTest;
 }

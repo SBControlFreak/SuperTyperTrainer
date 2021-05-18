@@ -11,6 +11,7 @@ HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 
+
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
@@ -43,15 +44,21 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     MSG msg;
 
     // Main message loop:
-    while (GetMessage(&msg, nullptr, 0, 0))
+    while (true)
     {
-        if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+        steady_clock::time_point t1 = steady_clock::now();
+        if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
         {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
-        }
-    }
 
+            if (msg.message == WM_QUIT)
+                break;
+        }
+        steady_clock::time_point t2 = steady_clock::now();
+
+        duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
+    }
     return (int) msg.wParam;
 }
 
@@ -104,7 +111,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    {
       return FALSE;
    }
-
    ShowWindow(hWnd, SW_MAXIMIZE);
    UpdateWindow(hWnd);
 
@@ -116,13 +122,12 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 //  PURPOSE: Processes messages for the main window.
 //
-//  WM_COMMAND  - process the application menu
-//  WM_PAINT    - Paint the main window
-//  WM_DESTROY  - post a quit message and return
-//
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    WPARAM tempTest = 'e';
+    HMENU Hmenu = GetMenu(hWnd);
+   
     switch (message)
     {
     case WM_CREATE:
@@ -134,6 +139,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             LocTest_.top = 100;
             LocTest_.bottom = 150;
         }
+        //Disable Start - Profiles need to be set up first
+        EnableMenuItem(Hmenu, 110, MF_GRAYED);
+        //Disable Stop - Game is not running
+        EnableMenuItem(Hmenu, 111, MF_GRAYED);
         break;
     case WM_COMMAND:
         {
@@ -142,6 +151,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             switch (wmId)
             {
             case IDM_START:
+                //MainGraph.WinMessageBox(L"Start", L"Message", MB_OK);
                 MessageBox(hWnd, L"Start", L"Message", MB_OK);
                 break;
             case IDM_PAUSE:
@@ -165,9 +175,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             MainGraph.BeginDraw();
 
-            KeyBoardCon.DrawUpdate(5.76);
+            KeyBoardCon.DrawUpdate(5.76, false);
             
             MainGraph.EndDraw();
+
+            //TODO: Needed for message box to work....but why?
+            PAINTSTRUCT ps;
+            HDC hdc = BeginPaint(hWnd, &ps);
+            // TODO: Add any drawing code that uses hdc here...
+            EndPaint(hWnd, &ps);
         }
         break;
     case WM_SIZE:
@@ -177,8 +193,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
     case WM_CHAR:
+        if (KeyBoardCon.WM_char(wParam, tempTest))
+        {
+            MainGraph.BeginDraw();
+            KeyBoardCon.DrawUpdate(5.76, true);
+            MainGraph.EndDraw();
+        }
         break;
     case WM_KEYDOWN:
+        if (KeyBoardCon.WM_keydown(wParam, tempTest))
+        {
+            MainGraph.BeginDraw();
+            KeyBoardCon.DrawUpdate(5.76, false);
+            MainGraph.EndDraw();
+        }
         break;
     case WM_DESTROY:
         {

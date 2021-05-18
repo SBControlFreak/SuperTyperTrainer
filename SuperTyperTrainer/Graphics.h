@@ -6,7 +6,8 @@ enum KBKColor
 {
 	Normal,
 	Right,
-	Wrong
+	Wrong,
+	Next
 };
 class BrushColor
 {
@@ -27,11 +28,11 @@ struct G_Resources
 	ID2D1HwndRenderTarget* pRenderTarget;
 	ID2D1GeometrySink* Sink;
 	ID2D1StrokeStyle* strokeStyle;
-	BrushColor					B_KeyBG_Normal, B_KeyBG_Next, B_KeyBG_Wrong, B_KeyBoardFrame, B_Outline, B_Font, B_Background, B_Scroll_B, B_Scroll_F;
+	BrushColor					B_KeyBG_Normal, B_KeyBG_Next, B_KeyBG_Wrong, B_KeyBG_Right, B_KeyBoardFrame, B_Outline, B_Font, B_Background, B_Scroll_B, B_Scroll_F;
 	//DirectWrite Variables
 	wstring						Font_Name;
-	float						Font_Size, Font_Width, Font_Width_Base;
-	IDWriteTextFormat* pITextFormat;
+	float						Font_SizeR, Font_SizeS, Font_Width, Font_Width_Base;
+	IDWriteTextFormat* pITextFormatR,* pITextFormatS;
 	IDWriteFactory* pIDWriteFactory;
 };
 class Graphics

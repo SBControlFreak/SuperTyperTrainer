@@ -16,6 +16,7 @@
 
 #include <string>
 #include <vector>
+#include <chrono>
 
 //Direct2D and DirectWrite Libraries
 #include <d2d1.h>
@@ -27,6 +28,7 @@
 #include <vector>
 
 using namespace std;
+using namespace std::chrono;
 
 template <class T> void SafeRelease(T** ppT)
 {

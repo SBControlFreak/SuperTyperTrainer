@@ -30,7 +30,8 @@ Graphics::~Graphics()
 
 	//Release DirectWrite Variables
 	SafeRelease(&G_R.pIDWriteFactory);
-	SafeRelease(&G_R.pITextFormat);
+	SafeRelease(&G_R.pITextFormatR);
+	SafeRelease(&G_R.pITextFormatS);
 	return;
 }
 
@@ -42,7 +43,8 @@ HRESULT Graphics::CreateG_Resources(HWND& hWnd_)
 	*/
 	hWnd = hWnd_;
 	G_R.Font_Name = L"Consolas";
-	G_R.Font_Size = 12.0;
+	G_R.Font_SizeR = 12.0;
+	G_R.Font_SizeS = 9.0;
 	G_R.Font_Width = G_R.Font_Width_Base = 6.5977;
 	HRESULT hr = S_OK;
 	if (FAILED(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &G_R.pFactory)))
@@ -68,6 +70,7 @@ HRESULT Graphics::CreateG_Resources(HWND& hWnd_)
 				// Direct2D Variables
 				G_R.B_KeyBG_Normal.C = D2D1::ColorF(D2D1::ColorF::AntiqueWhite);
 				G_R.B_KeyBG_Next.C = D2D1::ColorF(D2D1::ColorF::LightGreen);
+				G_R.B_KeyBG_Right.C = D2D1::ColorF(D2D1::ColorF::Green);
 				G_R.B_KeyBG_Wrong.C = D2D1::ColorF(D2D1::ColorF::Red);
 				G_R.B_KeyBoardFrame.C = D2D1::ColorF(D2D1::ColorF::LightGray);
 				G_R.B_Outline.C = D2D1::ColorF(D2D1::ColorF::Black);
@@ -79,6 +82,7 @@ HRESULT Graphics::CreateG_Resources(HWND& hWnd_)
 
 			hr = G_R.B_KeyBG_Normal.CreateBrush(G_R.pRenderTarget);
 			hr = G_R.B_KeyBG_Next.CreateBrush(G_R.pRenderTarget);
+			hr = G_R.B_KeyBG_Right.CreateBrush(G_R.pRenderTarget);
 			hr = G_R.B_KeyBG_Wrong.CreateBrush(G_R.pRenderTarget);
 			hr = G_R.B_KeyBoardFrame.CreateBrush(G_R.pRenderTarget);
 			hr = G_R.B_Outline.CreateBrush(G_R.pRenderTarget);
@@ -103,9 +107,18 @@ HRESULT Graphics::CreateG_Resources(HWND& hWnd_)
 					DWRITE_FONT_WEIGHT_NORMAL,
 					DWRITE_FONT_STYLE_NORMAL,
 					DWRITE_FONT_STRETCH_NORMAL,
-					G_R.Font_Size,
+					G_R.Font_SizeR,
 					L"en-US",
-					&G_R.pITextFormat);
+					&G_R.pITextFormatR);
+				hr = G_R.pIDWriteFactory->CreateTextFormat(
+					G_R.Font_Name.c_str(),
+					NULL,
+					DWRITE_FONT_WEIGHT_NORMAL,
+					DWRITE_FONT_STYLE_NORMAL,
+					DWRITE_FONT_STRETCH_NORMAL,
+					G_R.Font_SizeS,
+					L"en-US",
+					&G_R.pITextFormatS);
 			}
 		}
 	}
@@ -121,6 +134,7 @@ void Graphics::DestroyG_Resources()
 
 	G_R.B_KeyBG_Normal.DestroyBrush();
 	G_R.B_KeyBG_Next.DestroyBrush();
+	G_R.B_KeyBG_Right.DestroyBrush();
 	G_R.B_KeyBG_Wrong.DestroyBrush();
 	G_R.B_Background.DestroyBrush();
 	G_R.B_Font.DestroyBrush();
@@ -130,7 +144,8 @@ void Graphics::DestroyG_Resources()
 
 	//Release DirectWrite Variables
 	SafeRelease(&G_R.pIDWriteFactory);
-	SafeRelease(&G_R.pITextFormat);
+	SafeRelease(&G_R.pITextFormatR);
+	SafeRelease(&G_R.pITextFormatS);
 	return;
 }
 //template <class T> void Graphics::OnPaint(T** ppT)
